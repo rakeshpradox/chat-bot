@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PARADOX AI</title>
-    <!-- Tailwind CSS CDN for modern utilities -->
+    <title>PARADOX MULTI-AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Marked.js CDN to render beautiful markdown and code snippets -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
@@ -34,14 +31,12 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #475569;
         }
-        /* Glassmorphism Classes */
         .glass-panel {
             background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        /* Typing Dots Animation */
         .dot {
             animation: wave 1.3s linear infinite;
         }
@@ -51,7 +46,6 @@
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-6px); }
         }
-        /* Fade in animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
@@ -63,7 +57,6 @@
 </head>
 <body class="text-slate-200 h-screen flex flex-col overflow-hidden">
 
-    <!-- FIXED COMPACT HEADER -->
     <header class="glass-panel z-10 px-4 py-3 flex items-center justify-between shadow-xl flex-shrink-0">
         <div class="flex items-center gap-2">
             <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 flex-shrink-0">
@@ -74,25 +67,29 @@
             </div>
         </div>
 
-        <!-- API KEY INPUT & LINK -->
-        <div class="flex items-center gap-2">
-            <a href="https://aistudio.google.com/app/apikey" 
+        <div class="flex items-center gap-1.5 sm:gap-2">
+            <select id="ai-provider" onchange="handleProviderChange()" 
+                    class="bg-slate-900 border border-slate-800 text-xs rounded-lg py-1.5 px-2 text-slate-300 focus:outline-none focus:border-violet-500 cursor-pointer flex-shrink-0">
+                <option value="gemini">Google Gemini</option>
+                <option value="openai">OpenAI ChatGPT</option>
+                <option value="anthropic">Claude Anthropic</option>
+            </select>
+
+            <a id="get-key-link" href="https://aistudio.google.com/app/apikey" 
                target="_blank" 
                rel="noopener noreferrer" 
-               class="flex items-center gap-1.5 text-xs font-semibold text-violet-400 hover:text-violet-300 transition-colors duration-200 bg-violet-950/40 border border-violet-800/60 px-2.5 py-1.5 rounded-lg hover:bg-violet-950/60 flex-shrink-0">
+               class="flex items-center gap-1 text-xs font-semibold text-violet-400 hover:text-violet-300 bg-violet-950/40 border border-violet-800/60 px-2.5 py-1.5 rounded-lg hover:bg-violet-950/60 flex-shrink-0">
                 <span>🔑</span>
-                <span class="hidden md:inline">Get API Key</span>
+                <span class="hidden md:inline">Get Key</span>
             </a>
 
-            <!-- Key Input -->
-            <div class="relative w-40 sm:w-56 md:w-64">
+            <div class="relative w-32 sm:w-48 md:w-56">
                 <input type="password" id="api-key-input" 
                        class="w-full bg-slate-950/60 border border-slate-800 rounded-lg py-1.5 pl-3 pr-8 text-xs text-slate-300 placeholder-slate-500 focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all duration-200" 
-                       placeholder="Enter API Key..." />
+                       placeholder="Enter Gemini Key..." />
                 <span class="absolute right-2.5 top-2 text-slate-500 text-xs pointer-events-none" id="key-status-icon">🔒</span>
             </div>
             
-            <!-- Save Button -->
             <button onclick="saveApiKey()" 
                     class="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-md transition-all duration-200 flex-shrink-0">
                 Save
@@ -100,24 +97,23 @@
         </div>
     </header>
 
-    <!-- CHAT CONTAINER -->
     <main id="chat-container" class="flex-1 overflow-y-auto px-4 py-6 md:px-12 space-y-6 max-w-4xl w-full mx-auto">
-        <!-- Welcome Screen -->
         <div id="welcome-message" class="flex flex-col items-center justify-center h-full text-center p-8 animate-fade-in">
             <div class="h-14 w-14 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-center text-2xl mb-4 shadow-inner">
                 🌀
             </div>
-            <h2 class="text-lg font-bold text-slate-100 mb-1">Welcome to PARADOX AI</h2>
+            <h2 class="text-lg font-bold text-slate-100 mb-1">Welcome to PARADOX AI Hub</h2>
             <p class="text-xs text-slate-400 max-w-sm mb-4 leading-relaxed">
-                Save your Google Gemini key in the header to unlock the chat window.
+                Select your favorite provider, save your personal API key above, and enjoy instant secure access.
             </p>
-            <div class="flex gap-2 justify-center">
-                <span class="text-[10px] bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1 rounded-full">⚡ Gemini 2.0 Flash API</span>
+            <div class="flex gap-2 justify-center flex-wrap">
+                <span class="text-[10px] bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1 rounded-full">🟢 Gemini 2.0 Flash</span>
+                <span class="text-[10px] bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1 rounded-full">🔵 GPT-4o Mini</span>
+                <span class="text-[10px] bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-1 rounded-full">🟠 Claude 3.5 Sonnet</span>
             </div>
         </div>
     </main>
 
-    <!-- BOTTOM INPUT ZONE -->
     <footer class="p-4 bg-gradient-to-t from-slate-950 via-slate-950/90 to-transparent flex-shrink-0">
         <div class="max-w-4xl w-full mx-auto">
             <div class="glass-panel rounded-2xl p-1.5 shadow-2xl flex items-end gap-2 focus-within:border-violet-500/50 transition-colors duration-200">
@@ -125,7 +121,7 @@
                           rows="1"
                           oninput="autoResize(this)"
                           onkeydown="handleKeyPress(event)"
-                          placeholder="Ask PARADOX anything..." 
+                          placeholder="Ask anything..." 
                           class="flex-1 max-h-32 min-h-[40px] bg-transparent resize-none border-0 text-slate-200 placeholder-slate-400 focus:ring-0 focus:outline-none p-2.5 text-sm leading-relaxed"></textarea>
                 
                 <button onclick="sendMessage()" 
@@ -139,41 +135,55 @@
     </footer>
 
     <script>
-        // Check for saved API keys right away
+        // URLs config mapping for generating keys
+        const providerLinks = {
+            gemini: "https://aistudio.google.com/app/apikey",
+            openai: "https://platform.openai.com/api-keys",
+            anthropic: "https://console.anthropic.com/settings/keys"
+        };
+
         document.addEventListener('DOMContentLoaded', () => {
-            const savedKey = localStorage.getItem('gemini_api_key');
-            if (savedKey) {
-                document.getElementById('api-key-input').value = savedKey;
-                updateKeyStatusUI(true);
-            }
+            handleProviderChange(true); // Load key for default provider on opening
         });
+
+        function handleProviderChange(isInitialLoad = false) {
+            const provider = document.getElementById('ai-provider').value;
+            const keyInput = document.getElementById('api-key-input');
+            const linkButton = document.getElementById('get-key-link');
+            
+            // Adjust the Get Key Link destination
+            linkButton.href = providerLinks[provider];
+            keyInput.placeholder = `Enter ${provider.charAt(0).toUpperCase() + provider.slice(1)} Key...`;
+
+            // Load saved key for specific provider
+            const savedKey = localStorage.getItem(`api_key_${provider}`);
+            if (savedKey) {
+                keyInput.value = savedKey;
+                updateKeyStatusUI(true);
+            } else {
+                keyInput.value = '';
+                updateKeyStatusUI(false);
+            }
+        }
 
         function updateKeyStatusUI(hasKey) {
             const icon = document.getElementById('key-status-icon');
-            if (hasKey) {
-                icon.textContent = "🟢";
-                icon.title = "API Key Active";
-            } else {
-                icon.textContent = "🔒";
-                icon.title = "Key Missing";
-            }
+            icon.textContent = hasKey ? "🟢" : "🔒";
         }
 
         function saveApiKey() {
+            const provider = document.getElementById('ai-provider').value;
             const key = document.getElementById('api-key-input').value.trim();
+            
             if (key) {
-                localStorage.setItem('gemini_api_key', key);
+                localStorage.setItem(`api_key_${provider}`, key);
                 updateKeyStatusUI(true);
-                showToast("API Key successfully linked!");
+                showToast(`${provider.toUpperCase()} Key Linked!`);
             } else {
-                localStorage.removeItem('gemini_api_key');
+                localStorage.removeItem(`api_key_${provider}`);
                 updateKeyStatusUI(false);
-                showToast("API Key removed.");
+                showToast("Key removed.");
             }
-        }
-
-        function getApiKey() {
-            return document.getElementById('api-key-input').value.trim() || localStorage.getItem('gemini_api_key');
         }
 
         function autoResize(textarea) {
@@ -231,12 +241,13 @@
         async function sendMessage() {
             const inputField = document.getElementById('user-input');
             const userMessage = inputField.value.trim();
-            const apiKey = getApiKey();
+            const provider = document.getElementById('ai-provider').value;
+            const apiKey = document.getElementById('api-key-input').value.trim() || localStorage.getItem(`api_key_${provider}`);
 
             if (!userMessage) return;
 
             if (!apiKey) {
-                showToast("🔑 Please input and save an API key first.");
+                showToast("🔑 Please save an API key for this provider first.");
                 return;
             }
 
@@ -253,26 +264,51 @@
             `, 'ai', true);
 
             try {
-                // Pointing to gemini-2.0-flash stable production model
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: userMessage }] }]
-                    })
-                });
+                let response, data, replyText;
 
-                const data = await response.json();
-                
-                if (response.ok) {
-                    const reply = data.candidates[0].content.parts[0].text;
-                    typeText(loadingBubble, reply);
-                } else {
-                    loadingBubble.innerHTML = `<span class="text-rose-400 font-semibold">Error:</span> ${data.error.message || "Failed API request."}`;
+                // 🌐 DYNAMIC ROUTING SYSTEM
+                if (provider === 'gemini') {
+                    response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: userMessage }] }] })
+                    });
+                    data = await response.json();
+                    if (response.ok) replyText = data.candidates[0].content.parts[0].text;
+                    else throw new Error(data.error.message || "Gemini Error");
+
+                } else if (provider === 'openai') {
+                    response = await fetch('https://api.openai.com/v1/chat/completions', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                        body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: userMessage }] })
+                    });
+                    data = await response.json();
+                    if (response.ok) replyText = data.choices[0].message.content;
+                    else throw new Error(data.error.message || "OpenAI Error");
+
+                } else if (provider === 'anthropic') {
+                    // Client-side Anthropic requires bypassing strict CORS configurations for local mock testing
+                    response = await fetch('https://api.anthropic.com/v1/messages', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json', 
+                            'x-api-key': apiKey,
+                            'anthropic-version': '2023-06-01',
+                            'anthropic-dangerously-allow-browser': 'true'
+                        },
+                        body: JSON.stringify({ model: 'claude-3-5-sonnet-20241022', max_tokens: 1024, messages: [{ role: 'user', content: userMessage }] })
+                    });
+                    data = await response.json();
+                    if (response.ok) replyText = data.content[0].text;
+                    else throw new Error(data.error.message || "Anthropic Error");
                 }
+
+                typeText(loadingBubble, replyText);
+
             } catch (error) {
                 console.error(error);
-                loadingBubble.innerHTML = `<span class="text-rose-400 font-semibold">Connection Error:</span> API failed to respond.`;
+                loadingBubble.innerHTML = `<span class="text-rose-400 font-semibold">API Error:</span> ${error.message || "Failed to fetch response."}`;
             }
         }
     </script>
